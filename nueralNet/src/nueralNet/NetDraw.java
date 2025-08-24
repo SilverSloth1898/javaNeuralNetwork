@@ -5,9 +5,11 @@ import processing.core.*;
 public class NetDraw extends PApplet{
 
 	private NueralNet net;
+	private int[][] walls;
 	
-	public NetDraw(NueralNet Net) {
+	public NetDraw(NueralNet Net, int[][] wallArray) {
 		this.net = Net; //To access data from the network, do net.(insert variable name)
+		this.walls = wallArray;
 	}
 	
 	public void settings() {
@@ -21,6 +23,11 @@ public class NetDraw extends PApplet{
 	
 	public void draw() {
 		background(150);
+		for(int i = 0; i < walls.length; i++) { //Draw track walls
+			stroke(0);
+			strokeWeight(20);
+			line(walls[i][0], walls[i][1], walls[i][2], walls[i][3]);
+		}
 		fill(220);
 		noStroke();
 		rect(height, 0, width - height, height); //Makes the box for the network visualization
@@ -49,6 +56,7 @@ public class NetDraw extends PApplet{
 				ellipse(height + ((width-height) / (net.nodes.length + 1)) * (i + 1), (height / (net.nodes[i] + 1)) * (j + 1), height / 17, height / 17);
 			}
 		}
+		
 	}
 
 }

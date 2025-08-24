@@ -2,7 +2,7 @@ package nueralNet;
 
 public class NueralNet {
 
-	int[] nodes = {3, 4, 4, 3}; //Sets size of layers
+	int[] nodes = {3, 5, 5, 5, 3}; //Sets size of layers
 	float[][] activations = new float[nodes.length][]; //This creates the node activation array
 	float[][][] weights;
 	
