@@ -6,10 +6,12 @@ public class NetDraw extends PApplet{
 
 	private NueralNet net;
 	private int[][] walls;
+	private NetCar car;
 	
-	public NetDraw(NueralNet Net, int[][] wallArray) {
+	public NetDraw(NueralNet Net, int[][] wallArray, NetCar Car) {
 		this.net = Net; //To access data from the network, do net.(insert variable name)
 		this.walls = wallArray;
+		this.car = Car;
 	}
 	
 	public void settings() {
@@ -30,6 +32,7 @@ public class NetDraw extends PApplet{
 		}
 		fill(220);
 		noStroke();
+		rectMode(CORNER);
 		rect(height, 0, width - height, height); //Makes the box for the network visualization
 		for(int i = 0; i < net.nodes.length-1; i++) { //The following section draws the synapses of the net
 			for(int j = 0; j < net.nodes[i]; j++) {
@@ -56,7 +59,14 @@ public class NetDraw extends PApplet{
 				ellipse(height + ((width-height) / (net.nodes.length + 1)) * (i + 1), (height / (net.nodes[i] + 1)) * (j + 1), height / 17, height / 17);
 			}
 		}
-		
+		rectMode(CENTER); //The following section draws the car
+		noStroke();
+		fill(220, 0, 0);
+		pushMatrix();
+		translate(car.carX, car.carY);
+		rotate(car.carR);
+		rect(0, 0, 30, 60);
+		popMatrix();
 	}
 
 }
