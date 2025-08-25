@@ -5,10 +5,10 @@ import processing.core.*;
 public class NetDraw extends PApplet{
 
 	private NueralNet net;
-	private int[][] walls;
+	private float[][] walls;
 	private NetCar car;
 	
-	public NetDraw(NueralNet Net, int[][] wallArray, NetCar Car) {
+	public NetDraw(NueralNet Net, float[][] wallArray, NetCar Car) {
 		this.net = Net; //To access data from the network, do net.(insert variable name)
 		this.walls = wallArray;
 		this.car = Car;

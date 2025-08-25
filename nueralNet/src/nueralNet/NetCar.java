@@ -28,6 +28,17 @@ public class NetCar {
 	    speed = (float) Math.sqrt(carXVelo * carXVelo + carYVelo * carYVelo); //Finds the speed
 	    turningAuthority = speed * (float) 0.02; //Finds how quick it should be able to turn based on its speed
 	    carR += turn * turningAuthority; //Makes it turn
+	    carR = (carR + (float)(Math.PI * 2)) % (float)(Math.PI * 2);
+	    if(carX < 0) {
+	    	carX = 880;
+	    } else if(carX > 880) {
+	    	carX = 0;
+	    }
+	    if(carY < 0) {
+	    	carY = 880;
+	    } else if(carY > 880) {
+	    	carY = 0;
+	    }
 	}
 
 }

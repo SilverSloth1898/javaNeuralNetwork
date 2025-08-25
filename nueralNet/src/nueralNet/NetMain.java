@@ -6,7 +6,7 @@ public class NetMain {
 
 	public static void main(String[] args) {
 		
-		int[][] walls = { //This section is used to make the walls of the race course. Yes its tedious to make walls. No i'm not making it better.
+		float[][] walls = { //This section is used to make the walls of the race course. Yes its tedious to make walls. No i'm not making it better.
 				{0, 0, 880, 0},
 				{0, 0, 0, 880},
 				{0, 880, 880, 880},
@@ -29,12 +29,9 @@ public class NetMain {
 		
 		boolean isRunning = true;
 		
-		int input1 = 1;
-		int input2 = -1;
-		int input3 = 0;
-		float[] inputs = {input1, input2, input3};
+		float[] inputs = {1, -1, 0, 1, -1, 0, 1, -1, 0, 1};
 		
-		while(isRunning) {
+		while(isRunning) { //Main program loop
 			outputs = net.think(inputs);
 			car.updatePhysics(outputs);
 			net.mutateWeights();  //DEBUGGING CODE     IF NOT RUNNING CORRECTLY CHECK THIS   IT WILL RUIN EVERYTHING /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
@@ -42,6 +39,27 @@ public class NetMain {
 
 		}
 				
+	}
+	
+	public float[] carView(float[] inputs, float[][] walls, int rays) { //inputs = carx, cary, carr   walls = wall coordinates   rays = number of vision rays
+		
+		float carX = inputs[0], carY = inputs[1], carR = inputs[2];
+		
+		float[][] rayEnds = new float[rays][];
+		
+		for(int i = 0; i < rays; i++) { //Make the second dimension of the rayEnds array
+			rayEnds[i] = new float[rays];
+		}
+		
+		for(int i = 0; i < rays; i++) {
+			rayEnds[i][0] = carX + (float) 1500 * (float)Math.cos(carR - (Math.PI / 2) + (i/rays));
+//			rayEnds
+		}
+		
+		//Need to do the math to find the end coordinates of every vision ray
+		
+		return null;
+		
 	}
 	
 	public float[] lineIntersection(int[] points) { //Function for checking the coordinates of the intersections of two lines. this was written by chatgpt
