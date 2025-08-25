@@ -64,7 +64,7 @@ public class NetDraw extends PApplet{
 		fill(220, 0, 0);
 		pushMatrix();
 		translate(car.carX, car.carY);
-		rotate(car.carR);
+		rotate(car.carR + ((float) Math.PI / 2));
 		rect(0, 0, 30, 60);
 		popMatrix();
 	}

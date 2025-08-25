@@ -16,6 +16,7 @@ public class NetMain {
 				{220, 220, 660, 220},
 				{220, 660, 660, 660}
 		};
+		float[] outputs = new float[2];
 		
 		NueralNet net = new NueralNet();
 		NetCar car = new NetCar();
@@ -34,7 +35,8 @@ public class NetMain {
 		float[] inputs = {input1, input2, input3};
 		
 		while(isRunning) {
-			float[] test = net.think(inputs);
+			outputs = net.think(inputs);
+			car.updatePhysics(outputs);
 			net.mutateWeights();  //DEBUGGING CODE     IF NOT RUNNING CORRECTLY CHECK THIS   IT WILL RUIN EVERYTHING /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 			draw.redraw();
 
@@ -42,7 +44,8 @@ public class NetMain {
 				
 	}
 	
-	public float[] lineIntersection(int[] points) { //Function for checking the coordinates of the intersections of two lines
+	public float[] lineIntersection(int[] points) { //Function for checking the coordinates of the intersections of two lines. this was written by chatgpt
+		//i'm not gonna pretend to understand it, you just need to input line 1's coordinates and line 2's coordinates and it spits out the intersection coords
 		
 		float x1 = points[0], y1 = points[1], x2 = points[2], y2 = points[3], x3 = points[4], y3 = points[5], x4 = points[6], y4 = points[7];
 		float denom = ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
