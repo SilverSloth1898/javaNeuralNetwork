@@ -91,20 +91,9 @@ public class NetMain {
 		}
 		
 		//The following section normalizes the outputs and was written by chatgpt
-		float min = Float.MAX_VALUE; 
-		float max = Float.MIN_VALUE;
-	    for (float v : lowestValue) {
-	        if (v < min) min = v;
-	        if (v > max) max = v;
-	    }
-	    
 	    float[] normalized = new float[lowestValue.length];
 	    for (int i = 0; i < lowestValue.length; i++) {
-	        if (max == min) {
-	            normalized[i] = 0.5f; // Avoid division by zero (all values equal)
-	        } else {
-	            normalized[i] = (lowestValue[i] - min) / (max - min);
-	        }
+	            normalized[i] = lowestValue[i] / (float) 880;
 	    }
 	    
 	    normalized[normalized.length - 1] = speed;

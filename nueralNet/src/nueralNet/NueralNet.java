@@ -64,11 +64,21 @@ public class NueralNet {
 		}
 	}
 	
+	public float weightCapped(float input) { //Makes it so that the weights can go into the negatives
+		if (input > 1.5) { //This function could be worth checking in the case of a broken program
+			return((float) (1.5));
+		} else if (input < -1.5) {
+			return((float) (-1.5));
+		} else {
+			return(input);
+		}
+	}
+	
 	public void randomizeWeights() { //Starts the program off with entirely random weights
 		for(int i = 0; i < nodes.length - 1; i++) { //Goes through every starting node layer
 			for(int j = 0; j < nodes[i]; j++) { //Goes through every starting node
 				for(int k = 0; k < nodes[i+1]; k++) { //Goes through every ending node
-					weights[i][j][k] = (float)(Math.random() * 2 - 1);
+					weights[i][j][k] = (float)(Math.random() * 3 - 1.5);
 				}
 			}
 		}

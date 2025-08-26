@@ -14,7 +14,11 @@ public class NetCar {
 	float rollingEfficiency = (float) 0.5; //Yes, this is lower than it should be (90-95). i don't know why this works better.
 	
 	public void updatePhysics(float[] inputs) { //Updates the car's physics / moves the car
-		throttle = (float) (inputs[0] / 2 + 0.5);
+		if(inputs[0] != 0) {
+			throttle = (float) (inputs[0] / 2 + 0.5);
+		} else {
+			throttle = 0;
+		}
 //		throttle = 1;
 		turn = inputs[1];
 //		turn = 0;
