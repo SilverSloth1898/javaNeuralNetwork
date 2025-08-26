@@ -3,6 +3,8 @@ package nueralNet;
 import processing.core.PApplet;
 
 public class NetMain {
+	
+	static boolean shouldKill = false;
 
 	public static void main(String[] args) {
 		
@@ -21,7 +23,7 @@ public class NetMain {
 		NueralNet net = new NueralNet();
 		NetCar car = new NetCar();
 		net.setup();
-		net.randomizeWeights();
+		net.randomizeWeights(); //If importing weights, disable this command to not get rid of all data
 		NetDraw draw = new NetDraw(net, walls, car);
 		
 		String[] processingArgs = {"nueralNet.NetDraw"};
@@ -35,16 +37,21 @@ public class NetMain {
 			inputs[0] = car.carX;
 			inputs[1] = car.carY;
 			inputs[2] = car.carR;
-			outputs = net.think(carView(inputs, walls, net.nodes[0]));
+			outputs = net.think(carView(inputs, walls, net.nodes[0], (float) car.speed * 200));
 			car.updatePhysics(outputs);
 			net.mutateWeights();  //DEBUGGING CODE     IF NOT RUNNING CORRECTLY CHECK THIS   IT WILL RUIN EVERYTHING /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 			draw.redraw();
+			if(shouldKill) {
+				car.respawn();
+				shouldKill = false;
+			}
 
 		}
 				
 	}
 	
-	public static float[] carView(float[] inputs, float[][] walls, int rays) { //inputs = carx, cary, carr   walls = wall coordinates   rays = number of vision rays
+	//The following section is the way the car sees stuff. It shoots out 'rays' of vision and the car gets told how far each ray goes.
+	public static float[] carView(float[] inputs, float[][] walls, int rays, float speed) { //inputs = carx, cary, carr   walls = wall coordinates   rays = number of vision rays
 		
 		float carX = inputs[0], carY = inputs[1], carR = inputs[2];
 		
@@ -55,17 +62,17 @@ public class NetMain {
 		}
 		
 		for(int i = 0; i < rays; i++) { //Find coordinates of the end points of vision rays
-			rayEnds[i][0] = carX + (float) 1500 * (float)Math.cos(carR - (0.5 * Math.PI) + ((float) i/rays) * Math.PI);
-			rayEnds[i][1] = carY + (float) 1500 * (float)Math.sin(carR - (0.5 * Math.PI) + ((float) i/rays) * Math.PI);
+			rayEnds[i][0] = carX + (float) 1500 * (float)Math.cos(carR - (0.5 * Math.PI) + ((float) i/(rays - 1)) * Math.PI);
+			rayEnds[i][1] = carY + (float) 1500 * (float)Math.sin(carR - (0.5 * Math.PI) + ((float) i/(rays - 1)) * Math.PI);
 		}
 		
 		float[] lowestValue = new float[rays]; //Initializes 
-		for(int i = 0; i < rays; i++) {
+		for(int i = 0; i < rays - 1; i++) {
 			lowestValue[i] = 1500;
 		}
-		
+			
 		//Find shortest length of line intersections
-		for(int i = 0; i < rays; i++) { //Go through every vision ray
+		for(int i = 0; i < rays - 1; i++) { //Go through every vision ray
 			for(int j = 0; j < walls.length; j++) { //Go through every wall
 				if(lineIntersection((float) inputs[0], (float) inputs[1],  //Check if there is an intersection
 						rayEnds[i][0], rayEnds[i][1], walls[j][0], walls[j][1], walls[j][2], walls[j][3]) != null) {
@@ -75,6 +82,9 @@ public class NetMain {
 					if(intersectDist < lowestValue[i]) { //Sees if it is a new shortest distance
 						lowestValue[i] = intersectDist;
 //						System.out.println(lowestValue[i]);
+						if (lowestValue[i] < 20) { //Kill the car if it hits a wall
+							shouldKill = true;
+						}
 					}
 				}
 			}
@@ -96,6 +106,8 @@ public class NetMain {
 	            normalized[i] = (lowestValue[i] - min) / (max - min);
 	        }
 	    }
+	    
+	    normalized[normalized.length - 1] = speed;
 
 	    return normalized;
 						

@@ -14,11 +14,12 @@ public class NetCar {
 	float rollingEfficiency = (float) 0.5; //Yes, this is lower than it should be (90-95). i don't know why this works better.
 	
 	public void updatePhysics(float[] inputs) { //Updates the car's physics / moves the car
-		throttle = inputs[0];
-//		throttle = 0;
+		throttle = (float) (inputs[0] / 2 + 0.5);
+//		throttle = 1;
 		turn = inputs[1];
-	    carXVelo += Math.cos(carR) * throttle * 0.0005; //Sets the x velocity of the car
-	    carYVelo += Math.sin(carR) * throttle * 0.0005; //Sets the y velocity of the car
+//		turn = 0;
+	    carXVelo += Math.cos(carR) * throttle * 0.005; //Sets the x velocity of the car
+	    carYVelo += Math.sin(carR) * throttle * 0.005; //Sets the y velocity of the car
 	    
 	    carXVelo *= rollingEfficiency; //Removes some speed
 	    carYVelo *= rollingEfficiency; //Removes some speed
@@ -40,6 +41,14 @@ public class NetCar {
 	    } else if(carY > 880) {
 	    	carY = 0;
 	    }
+	}
+	
+	public void respawn() {
+		carX = 400;
+		carY = 775;
+		carR = (float) Math.PI;
+		carXVelo = 0;
+		carYVelo = 0;
 	}
 
 }
