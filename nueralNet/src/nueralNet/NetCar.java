@@ -2,9 +2,9 @@ package nueralNet;
 
 public class NetCar {
 	
-	float carX = 440;
-	float carY = 440;
-	float carR = 0; //Radians, not degrees
+	float carX = 400;
+	float carY = 775;
+	float carR = (float) Math.PI; //Radians, not degrees
 	float carXVelo = 0;
 	float carYVelo = 0;
 	float speed;
@@ -15,6 +15,7 @@ public class NetCar {
 	
 	public void updatePhysics(float[] inputs) { //Updates the car's physics / moves the car
 		throttle = inputs[0];
+//		throttle = 0;
 		turn = inputs[1];
 	    carXVelo += Math.cos(carR) * throttle * 0.0005; //Sets the x velocity of the car
 	    carYVelo += Math.sin(carR) * throttle * 0.0005; //Sets the y velocity of the car

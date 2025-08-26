@@ -2,7 +2,7 @@ package nueralNet;
 
 public class NueralNet {
 
-	int[] nodes = {10, 8, 6, 2}; //Sets size of layers
+	int[] nodes = {20, 12, 8, 2}; //Sets size of layers
 	float[][] activations = new float[nodes.length][]; //This creates the node activation array
 	float[][][] weights;
 	
@@ -32,7 +32,12 @@ public class NueralNet {
 				activations[i][j] = 0;
 				for(int k = 0; k < nodes[i-1]; k++) { //Goes through every weight starting node, we already know the weight ending node
 					activations[i][j] += (activations[i-1][k] * weights[i-1][k][j]); //Adds the connected weight's output
-					activations[i][j] = capped(activations[i][j]); //Caps the node's activation
+					if(i < nodes.length - 1) { 
+						activations[i][j] = capped(activations[i][j]); //Caps the node's activation
+					} else {
+						activations[i][j] = lowCapped(activations[i][j]); //Caps the node's activation
+
+					}
 				}
 			}
 		}
@@ -40,6 +45,16 @@ public class NueralNet {
 	}
 	
 	public float capped(float input) { //Activation function. Linear activation capped at -1 and 1. Not entirely sure if this works.
+		if (input > 1) { //This function could be worth checking in the case of a broken program
+			return((float) (1));
+		} else if (input < 0) {
+			return((float) (0));
+		} else {
+			return(input);
+		}
+	}
+	
+	public float lowCapped(float input) { //Makes it so that the weights can go into the negatives
 		if (input > 1) { //This function could be worth checking in the case of a broken program
 			return((float) (1));
 		} else if (input < -1) {
@@ -64,7 +79,7 @@ public class NueralNet {
 			for(int j = 0; j < nodes[i]; j++) { //Goes through every starting node
 				for(int k = 0; k < nodes[i+1]; k++) { //Goes through every ending node
 					weights[i][j][k] += (float)((Math.random() * 2 - 1) / 5000);
-					weights[i][j][k] = capped(weights[i][j][k]);
+					weights[i][j][k] = lowCapped(weights[i][j][k]);
 				}
 			}
 		}

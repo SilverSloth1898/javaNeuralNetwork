@@ -39,9 +39,9 @@ public class NetDraw extends PApplet{
 				for(int k = 0; k < net.nodes[i+1]; k++) {
 					strokeWeight(abs(net.weights[i][j][k]) * height / 100);
 					if(net.weights[i][j][k] <= 0) {
-						stroke(255, 0, 0);
+						stroke(255, 0, 0, 70);
 					} else {
-						stroke(0, 255, 0);
+						stroke(0, 255, 0, 70);
 					}
 					//yes, i know this line is a mess, and no i'm not going to fix it
 					line(height + ((width-height) / (net.nodes.length + 1)) * (i+1), (height / (net.nodes[i] + 1)) * (j+1), 
@@ -54,7 +54,7 @@ public class NetDraw extends PApplet{
 		stroke(0);
 		for(int i = 0; i < net.nodes.length; i++) { //Goes through every network layer
 			for(int j = 0; j < net.nodes[i]; j++) { //Goes through every node activation in the layer
-				fill((net.activations[i][j] + 1) * 127);
+				fill((net.activations[i][j]) * 255);
 //				fill(120);
 				ellipse(height + ((width-height) / (net.nodes.length + 1)) * (i + 1), (height / (net.nodes[i] + 1)) * (j + 1), height / 17, height / 17);
 			}
@@ -66,6 +66,14 @@ public class NetDraw extends PApplet{
 		translate(car.carX, car.carY);
 		rotate(car.carR + ((float) Math.PI / 2));
 		rect(0, 0, 30, 60);
+		fill(200, 0, 0);
+		rect(0, 10, 20, 30);
+		fill(220);
+		rect(10, (float) -27.5, 10, 5);
+		rect(-10, (float) -27.5, 10, 5);
+		fill(100, 100, 240);
+		rect(0, -10, 20, 8);
+		rect(0, (float) 27.5, 20, 5);
 		popMatrix();
 	}
 

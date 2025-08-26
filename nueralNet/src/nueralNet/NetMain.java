@@ -29,10 +29,13 @@ public class NetMain {
 		
 		boolean isRunning = true;
 		
-		float[] inputs = {1, -1, 0, 1, -1, 0, 1, -1, 0, 1};
+		float[] inputs = new float[3];
 		
 		while(isRunning) { //Main program loop
-			outputs = net.think(inputs);
+			inputs[0] = car.carX;
+			inputs[1] = car.carY;
+			inputs[2] = car.carR;
+			outputs = net.think(carView(inputs, walls, net.nodes[0]));
 			car.updatePhysics(outputs);
 			net.mutateWeights();  //DEBUGGING CODE     IF NOT RUNNING CORRECTLY CHECK THIS   IT WILL RUIN EVERYTHING /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 			draw.redraw();
@@ -41,31 +44,68 @@ public class NetMain {
 				
 	}
 	
-	public float[] carView(float[] inputs, float[][] walls, int rays) { //inputs = carx, cary, carr   walls = wall coordinates   rays = number of vision rays
+	public static float[] carView(float[] inputs, float[][] walls, int rays) { //inputs = carx, cary, carr   walls = wall coordinates   rays = number of vision rays
 		
 		float carX = inputs[0], carY = inputs[1], carR = inputs[2];
 		
 		float[][] rayEnds = new float[rays][];
 		
 		for(int i = 0; i < rays; i++) { //Make the second dimension of the rayEnds array
-			rayEnds[i] = new float[rays];
+			rayEnds[i] = new float[2];
 		}
 		
+		for(int i = 0; i < rays; i++) { //Find coordinates of the end points of vision rays
+			rayEnds[i][0] = carX + (float) 1500 * (float)Math.cos(carR - (0.5 * Math.PI) + ((float) i/rays) * Math.PI);
+			rayEnds[i][1] = carY + (float) 1500 * (float)Math.sin(carR - (0.5 * Math.PI) + ((float) i/rays) * Math.PI);
+		}
+		
+		float[] lowestValue = new float[rays]; //Initializes 
 		for(int i = 0; i < rays; i++) {
-			rayEnds[i][0] = carX + (float) 1500 * (float)Math.cos(carR - (Math.PI / 2) + (i/rays));
-//			rayEnds
+			lowestValue[i] = 1500;
 		}
 		
-		//Need to do the math to find the end coordinates of every vision ray
+		//Find shortest length of line intersections
+		for(int i = 0; i < rays; i++) { //Go through every vision ray
+			for(int j = 0; j < walls.length; j++) { //Go through every wall
+				if(lineIntersection((float) inputs[0], (float) inputs[1],  //Check if there is an intersection
+						rayEnds[i][0], rayEnds[i][1], walls[j][0], walls[j][1], walls[j][2], walls[j][3]) != null) {
+					float[] intersectCoords = lineIntersection((float) inputs[0], (float) inputs[1], //Assign intersection
+						rayEnds[i][0], rayEnds[i][1], walls[j][0], walls[j][1], walls[j][2], walls[j][3]);
+					float intersectDist = (float) Math.sqrt(Math.pow(intersectCoords[0] - carX, 2) + Math.pow(intersectCoords[1] - carY, 2));
+					if(intersectDist < lowestValue[i]) { //Sees if it is a new shortest distance
+						lowestValue[i] = intersectDist;
+//						System.out.println(lowestValue[i]);
+					}
+				}
+			}
+		}
 		
-		return null;
-		
+		//The following section normalizes the outputs and was written by chatgpt
+		float min = Float.MAX_VALUE; 
+		float max = Float.MIN_VALUE;
+	    for (float v : lowestValue) {
+	        if (v < min) min = v;
+	        if (v > max) max = v;
+	    }
+	    
+	    float[] normalized = new float[lowestValue.length];
+	    for (int i = 0; i < lowestValue.length; i++) {
+	        if (max == min) {
+	            normalized[i] = 0.5f; // Avoid division by zero (all values equal)
+	        } else {
+	            normalized[i] = (lowestValue[i] - min) / (max - min);
+	        }
+	    }
+
+	    return normalized;
+						
 	}
 	
-	public float[] lineIntersection(int[] points) { //Function for checking the coordinates of the intersections of two lines. this was written by chatgpt
-		//i'm not gonna pretend to understand it, you just need to input line 1's coordinates and line 2's coordinates and it spits out the intersection coords
+	public static float[] lineIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) { 
+		//Function for checking the coordinates of the intersections of two lines. this was written by chatgpt
+		//i'm not gonna pretend to understand it, you just need to input line 1's coordinates 
+		//and line 2's coordinates and it spits out the intersection coords
 		
-		float x1 = points[0], y1 = points[1], x2 = points[2], y2 = points[3], x3 = points[4], y3 = points[5], x4 = points[6], y4 = points[7];
 		float denom = ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
 		if(denom == 0) {
 			return null;
